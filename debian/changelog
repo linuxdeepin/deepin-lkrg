@@ -1,3 +1,9 @@
+lkrg (0.9.8-1deepin1) unstable; urgency=medium
+
+  * add build depends dh-dkms.
+
+ -- LiChengGang <lichenggang@uniontech.com>  Fri, 20 Sep 2024 13:13:08 +0800
+
 lkrg (0.9.8-1) unstable; urgency=medium
 
   * New upstream release.
