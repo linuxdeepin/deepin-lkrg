@@ -213,13 +213,9 @@ typedef struct _p_lkrg_global_symbols_structure {
  #endif
 #endif
    int (*p___kernel_text_address)(unsigned long p_addr);
-#if defined(CONFIG_SECCOMP)
+#if defined(CONFIG_SECCOMP) && LINUX_VERSION_CODE < KERNEL_VERSION(5,9,0)
    void (*p_get_seccomp_filter)(struct task_struct *p_task);
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,9,0)
-   void (*p_put_seccomp_filter)(struct seccomp_filter *p_filter);
-#else
    void (*p_put_seccomp_filter)(struct task_struct *p_task);
-#endif
 #endif
 #ifdef CONFIG_SECURITY_SELINUX
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
@@ -237,13 +233,15 @@ typedef struct _p_lkrg_global_symbols_structure {
    pmd_t *(*p_mm_find_pmd)(struct mm_struct *mm, unsigned long address);
    struct mutex *p_jump_label_mutex;
    struct mutex *p_text_mutex;
+#ifdef CONFIG_TRACEPOINTS
    struct mutex *p_tracepoints_mutex;
+#endif
    struct text_poke_loc **p_tp_vec;
    int *p_tp_vec_nr;
 #if defined(CONFIG_DYNAMIC_DEBUG)
    struct list_head *p_ddebug_tables;
    struct mutex *p_ddebug_lock;
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0) && LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0) && LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0) && !defined(mod_mem_type_is_init)
    int (*p_ddebug_remove_module)(const char *p_name);
 #endif
 #endif
@@ -442,7 +440,7 @@ static inline int p_lkrg_counter_lock_val_read(p_lkrg_counter_lock *p_arg) {
 #endif
 
 #if defined(CONFIG_TRIM_UNUSED_KSYMS) && !defined(CONFIG_SECURITY_LKRG)
- #error "LKRG requires CONFIG_TRIM_UNUSED_KSYMS to be disabled if it should be built as an out-of-tree kernel module"
+ #error "LKRG requires CONFIG_TRIM_UNUSED_KSYMS to be disabled if it should be built as a kernel module"
 #endif
 
 #endif

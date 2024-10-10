@@ -1,3 +1,9 @@
+lkrg (0.9.8-1deepin2) unstable; urgency=medium
+
+  * Fix "Can't hook 'arch_jump_label_transform'".
+
+ -- WangYuli <wangyuli@uniontech.com>  Thu, 10 Oct 2024 11:07:45 +0800
+
 lkrg (0.9.8-1deepin1) unstable; urgency=medium
 
   * add build depends dh-dkms.
