@@ -33,7 +33,9 @@
 #include <linux/inet.h>
 
 #include <linux/time.h>
-#include <linux/sched/clock.h> /* for local_clock() */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 11, 0)
+#include <linux/sched/clock.h> /* for local_clock(), was in sched.h before */
+#endif
 
 #include <linux/mutex.h>
 #include <linux/workqueue.h>
@@ -128,6 +130,12 @@ static void maybe_reconnect(void)
 	}
 
 	sk->sk->sk_sndtimeo = HZ;
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 7, 0)
+	tcp_sock_set_nodelay(sk->sk);
+#else
+	int one = 1;
+	kernel_setsockopt(sk, SOL_TCP, TCP_NODELAY, (char *)&one, sizeof(one));
+#endif
 
 	saddr.sin_family = AF_INET;
 	saddr.sin_port = htons(net_server_port);
